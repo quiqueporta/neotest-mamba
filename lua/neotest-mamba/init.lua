@@ -38,6 +38,12 @@ function adapter.discover_positions(path)
     ; -- Tests --
     ; Matches: `it('test')`
     (with_item value:
+    (call function: (identifier)@func_name (#any-of? @func_name "it" "fit")
+        arguments: (argument_list (string (string_content) @test.name))
+    )) @test.definition
+    ; -- Tests --
+    ; Matches: `context('test')`
+    (with_item value:
     (call function: (identifier)@func_name (#any-of? @func_name "it" "fit" "context")
         arguments: (argument_list (string (string_content) @test.name))
     )) @test.definition
