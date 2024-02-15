@@ -9,17 +9,17 @@ end
 
 describe("adapter enabled", function()
     async.it("enable adapter", function()
-        assert.Not.Nil(plugin.root("./specs"))
+        assert.Not.Nil(plugin.root("./"))
     end)
 end)
 
 describe("is_test_file", function()
     it("matches mamba specs files", function()
-        assert.True(plugin.is_test_file("./spec/example_spec.py"))
+        assert.True(plugin.is_test_file("./specs/example_spec.py"))
     end)
 
     it("does not match plain pyhton files", function()
-        assert.False(plugin.is_test_file("./example.py"))
+        assert.False(plugin.is_test_file("./specs/example.py"))
     end)
 
 end)
@@ -28,39 +28,55 @@ describe("discover_positions", function()
     async.it("provides meaningful names from a basic spec", function()
         local positions = plugin.discover_positions("./specs/example_spec.py"):to_list()
 
+
         local expected_output = {
             {
                 name = "example_spec.py",
-                type = "file",
+                path = "./specs/example_spec.py",
+                type = "file"
             },
             {
                 {
                     name = "first test",
-                    type = "test",
-                },
+                    type = "test"
+                }
+            },
+            {
+                {
+                    name = "second test",
+                    type = "test"
+                }
+            },
+            {
+                {
+                    name = "test outside context",
+                    type = "test"
+                }
+            },
+            {
                 {
                     name = "fixed test outside context",
-                    type = "test",
-                },
-            },
+                    path = "./specs/example_spec.py",
+                    type = "test"
+                }
+            }
         }
 
         assert.equals(expected_output[1].name, positions[1].name)
         assert.equals(expected_output[1].type, positions[1].type)
         assert.equals(expected_output[2][1].name, positions[2][1].name)
         assert.equals(expected_output[2][1].type, positions[2][1].type)
+        assert.equals(expected_output[3][1].name, positions[3][1].name)
+        assert.equals(expected_output[3][1].type, positions[3][1].type)
+        assert.equals(expected_output[4][1].name, positions[4][1].name)
+        assert.equals(expected_output[4][1].type, positions[4][1].type)
+        assert.equals(expected_output[5][1].name, positions[5][1].name)
+        assert.equals(expected_output[5][1].type, positions[5][1].type)
 
-        assert.equals(1, #positions[2])
-        for i, value in ipairs(expected_output[2][2]) do
-            assert.is.truthy(value)
-            local position = positions[2][i + 1][1]
-            assert.is.truthy(position)
-            assert.equals(value.name, position.name)
-            assert.equals(value.type, position.type)
-        end
     end)
 
 end)
+
 
 describe("build_spec", function()
     async.it("builds command for file test", function()
@@ -74,8 +90,8 @@ describe("build_spec", function()
         local command = spec.command
         assert.is.truthy(command)
         assert.contains(command, "mamba")
-        assert.contains(command, "--format=documentation")
-        assert.contains(command, "./specs/example_spec.py")
+        assert.contains(command, "--format=junit")
+        assert.contains(command, "specs/example_spec.py")
         assert.is.truthy(spec.context.file)
     end)
 end)

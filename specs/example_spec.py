@@ -1,4 +1,4 @@
-from mamba import description, it, context, fit
+from mamba import description, it, context, fit, fcontext
 from expects import expect, be_true, be_false
 
 with description("This is a test description"):
@@ -6,7 +6,7 @@ with description("This is a test description"):
         with it("first test"):
             expect(True).to(be_true)
 
-    with context("second context"):
+    with fcontext("second fixed context"):
         with it("second test"):
             expect(True).to(be_true)
 
