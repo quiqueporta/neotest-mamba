@@ -61,7 +61,7 @@ function adapter.build_spec(args)
 	local command = vim.split(binary, "%s+")
 
 	vim.list_extend(command, {
-		"--format=documentation",
+		"--format=junit",
 		pos.path,
 	})
 
